@@ -1,0 +1,25 @@
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="title">Title:</label>
+    <input type="text" id="title" formControlName="title">
+  </div>
+  <div>
+    <label for="description">Description:</label>
+    <textarea id="description" formControlName="description"></textarea>
+  </div>
+  <div>
+    <label for="assignedTo">Assigned To:</label>
+    <!-- Dropdown or autocomplete input for selecting users -->
+    <input type="text" id="assignedTo" formControlName="assignedTo">
+  </div>
+  <div>
+    <label for="status">Status:</label>
+    <!-- Dropdown or radio buttons for selecting status -->
+    <select id="status" formControlName="status">
+      <option value="Pending">Pending</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Completed">Completed</option>
+    </select>
+  </div>
+  <button type="submit" [disabled]="taskForm.invalid">Submit</button>
+</form>

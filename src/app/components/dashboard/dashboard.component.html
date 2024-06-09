@@ -1,0 +1,11 @@
+<!-- dashboard.component.html -->
+<div class="container mx-auto px-4 py-8">
+  <h2 class="text-2xl font-bold mb-4">Tasks</h2>
+
+  <div *ngFor="let task of tasks" class="bg-white rounded shadow-md p-4 mb-4">
+    <h3 class="text-lg font-semibold">{{ task.title }}</h3>
+    <p class="text-gray-600">{{ task.completed ? 'Completed' : 'Pending' }}</p>
+  </div>
+
+  <div *ngIf="tasks.length === 0" class="text-gray-600">No tasks available.</div>
+</div>
