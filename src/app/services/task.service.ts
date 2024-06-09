@@ -8,6 +8,9 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class TaskService {
+  getTaskById(id: number) {
+    throw new Error('Method not implemented.');
+  }
   private baseUrl = 'https://jsonplaceholder.typicode.com/todos';
 
   constructor() { }

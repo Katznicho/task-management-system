@@ -14,6 +14,7 @@ import { TaskService } from '../../services/task.service';
 export class TaskFormComponent implements OnInit {
   taskForm!: FormGroup;
   taskId: number | null = null;
+  loading = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -34,28 +35,39 @@ export class TaskFormComponent implements OnInit {
       const id = params.get('id');
       if (id) {
         this.taskId = +id;
-        this.loadTask(this.taskId);
+        //this.loadTask(this.taskId);
       }
     });
   }
 
-  loadTask(id: number): void {
-    this.taskService.getTaskById(id).subscribe(task => {
-      this.taskForm.patchValue(task);
-    });
-  }
+  // loadTask(id: number): void {
+  //   this.taskService.getTaskById(id).subscribe((task: { [key: string]: any; }) => {
+  //     this.taskForm.patchValue(task);
+  //   });
+  // }
 
   onSubmit(): void {
     if (this.taskForm.valid) {
-      if (this.taskId) {
-        this.taskService.updateTask({ id: this.taskId, ...this.taskForm.value }).subscribe(() => {
+      console.log("submitting")
+      this.loading = true;
+      const task = this.taskForm.value;
+      const taskObservable = this.taskId
+        ? this.taskService.updateTask({ id: this.taskId, ...task })
+        : this.taskService.createTask(task);
+
+      taskObservable.subscribe({
+        next: () => {
+          this.loading = false;
           this.router.navigate(['/dashboard']);
-        });
-      } else {
-        this.taskService.createTask(this.taskForm.value).subscribe(() => {
-          this.router.navigate(['/dashboard']);
-        });
-      }
+        },
+        error: () => {
+          this.loading = false;
+          alert('Something went wrong while submitting the task.');
+        }
+      });
+    }
+    else{
+      console.log(this.taskForm.value);
     }
   }
 }

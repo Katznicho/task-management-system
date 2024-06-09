@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { TaskFormComponent } from "./component/task-form/task-form.component";
 
 
 @Component({
@@ -7,7 +8,7 @@ import { RouterOutlet } from '@angular/router';
     standalone: true,
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
-    imports: [RouterOutlet]
+    imports: [RouterOutlet, TaskFormComponent]
 })
 export class AppComponent {
 
