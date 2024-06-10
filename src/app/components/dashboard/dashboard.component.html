@@ -1,11 +1,80 @@
 <!-- dashboard.component.html -->
-<div class="container mx-auto px-4 py-8">
-  <h2 class="text-2xl font-bold mb-4">Tasks</h2>
+<div class="container p-4 mx-auto">
+  <h1 class="mb-4 text-2xl font-bold">Tasks</h1>
 
-  <div *ngFor="let task of tasks" class="bg-white rounded shadow-md p-4 mb-4">
-    <h3 class="text-lg font-semibold">{{ task.title }}</h3>
-    <p class="text-gray-600">{{ task.completed ? 'Completed' : 'Pending' }}</p>
+  <button (click)="startCreate()" class="px-4 py-2 mb-4 text-white bg-green-500 rounded">Create Task</button>
+
+  <table class="min-w-full mb-4 bg-white">
+    <thead>
+      <tr>
+        <th class="px-4 py-2 border-b">Task Name</th>
+        <th class="px-4 py-2 border-b">Description</th>
+        <th class="px-4 py-2 border-b">Assignee</th>
+        <th class="px-4 py-2 border-b">Status</th>
+        <th class="px-4 py-2 border-b">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let task of tasks">
+        <td class="px-4 py-2 border-b">{{ task.taskName }}</td>
+        <td class="px-4 py-2 border-b">{{ task.description }}</td>
+        <td class="px-4 py-2 border-b">{{ task.assignee }}</td>
+        <td class="px-4 py-2 border-b">{{ task.status }}</td>
+        <td class="px-4 py-2 border-b">
+          <button (click)="startEdit(task)" class="text-blue-500">Edit</button>
+          <button (click)="deleteTask(task.id)" class="text-red-500">Delete</button>
+          <input [(ngModel)]="newAssignee" placeholder="New Assignee" class="ml-2">
+          <button (click)="assignTask(task.id, newAssignee)" class="ml-2 text-green-500">Assign</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="editTask" class="p-4 mt-4 bg-gray-100 rounded shadow-md">
+    <h2 class="mb-4 text-xl font-bold">Edit Task</h2>
+    <form (ngSubmit)="saveEdit()">
+      <label class="block mb-2">
+        Task Name:
+        <input [(ngModel)]="editTask.taskName" name="taskName" class="block w-full px-3 py-2 border rounded-md">
+      </label>
+      <label class="block mb-2">
+        Description:
+        <input [(ngModel)]="editTask.description" name="description" class="block w-full px-3 py-2 border rounded-md">
+      </label>
+      <label class="block mb-2">
+        Assignee:
+        <input [(ngModel)]="editTask.assignee" name="assignee" class="block w-full px-3 py-2 border rounded-md">
+      </label>
+      <label class="block mb-2">
+        Status:
+        <input [(ngModel)]="editTask.status" name="status" class="block w-full px-3 py-2 border rounded-md">
+      </label>
+      <button type="submit" class="px-4 py-2 text-white bg-blue-500 rounded">Save</button>
+      <button type="button" (click)="editTask = null" class="px-4 py-2 ml-2 text-white bg-gray-500 rounded">Cancel</button>
+    </form>
   </div>
 
-  <div *ngIf="tasks.length === 0" class="text-gray-600">No tasks available.</div>
+  <div *ngIf="createTask" class="p-4 mt-4 bg-gray-100 rounded shadow-md">
+    <h2 class="mb-4 text-xl font-bold">Create Task</h2>
+    <form (ngSubmit)="saveCreate()">
+      <label class="block mb-2">
+        Task Name:
+        <input [(ngModel)]="createTask.taskName" name="taskName" class="block w-full px-3 py-2 border rounded-md">
+      </label>
+      <label class="block mb-2">
+        Description:
+        <input [(ngModel)]="createTask.description" name="description" class="block w-full px-3 py-2 border rounded-md">
+      </label>
+      <label class="block mb-2">
+        Assignee:
+        <input [(ngModel)]="createTask.assignee" name="assignee" class="block w-full px-3 py-2 border rounded-md">
+      </label>
+      <label class="block mb-2">
+        Status:
+        <input [(ngModel)]="createTask.status" name="status" class="block w-full px-3 py-2 border rounded-md">
+      </label>
+      <button type="submit" class="px-4 py-2 text-white bg-green-500 rounded">Create</button>
+      <button type="button" (click)="createTask = null" class="px-4 py-2 ml-2 text-white bg-gray-500 rounded">Cancel</button>
+    </form>
+  </div>
 </div>

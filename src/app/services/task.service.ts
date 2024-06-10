@@ -1,54 +1,54 @@
 // task.service.ts
 import { Injectable } from '@angular/core';
-import axios from 'axios';
-import { Observable, from, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TaskService {
-  getTaskById(id: number) {
-    throw new Error('Method not implemented.');
-  }
-  private baseUrl = 'https://jsonplaceholder.typicode.com/todos';
+  private tasks = [
+    { id: 1, assignee: 'Doe', status: 'pending', taskName: 'Sample Task', description: 'This is a sample task' },
+    { id: 2, assignee: 'Jonny', status: 'pending', taskName: 'Test Task', description: 'This is a Test task' },
+    { id: 3, assignee: 'Eve', status: 'completed', taskName: 'Test Task', description: 'This is a Test task' },
+    { id: 4, assignee: 'Doe', status: 'in_progress', taskName: 'Test Task', description: 'This is a Test task' },
+    { id: 5, assignee: 'Eve', status: 'completed', taskName: 'Test Task', description: 'This is a Test task' },
+    { id: 6, assignee: 'Eve', status: 'completed', taskName: 'Test Task', description: 'This is a Test task' }
+  ];
 
-  constructor() { }
+  private tasksSubject = new BehaviorSubject<any[]>(this.tasks);
 
-  getAllTasks(): Observable<any> {
-    return from(axios.get(this.baseUrl)).pipe(
-      catchError(error => {
-        console.error('Error fetching tasks:', error);
-        return throwError('Something went wrong while fetching tasks. Please try again later.');
-      })
-    );
-  }
-
-  createTask(task: any): Observable<any> {
-    return from(axios.post(this.baseUrl, task)).pipe(
-      catchError(error => {
-        console.error('Error creating task:', error);
-        return throwError('Something went wrong while creating the task. Please try again later.');
-      })
-    );
+  getAllTasks(): Observable<any[]> {
+    return this.tasksSubject.asObservable();
   }
 
-  updateTask(task: any): Observable<any> {
-    const { id, ...taskData } = task;
-    return from(axios.put(`${this.baseUrl}/${id}`, taskData)).pipe(
-      catchError(error => {
-        console.error('Error updating task:', error);
-        return throwError('Something went wrong while updating the task. Please try again later.');
-      })
-    );
+  updateTask(updatedTask: any): Observable<any> {
+    const taskIndex = this.tasks.findIndex(task => task.id === updatedTask.id);
+    if (taskIndex > -1) {
+      this.tasks[taskIndex] = updatedTask;
+      this.tasksSubject.next(this.tasks);
+    }
+    return of(updatedTask);
   }
 
-  deleteTask(id: number): Observable<any> {
-    return from(axios.delete(`${this.baseUrl}/${id}`)).pipe(
-      catchError(error => {
-        console.error('Error deleting task:', error);
-        return throwError('Something went wrong while deleting the task. Please try again later.');
-      })
-    );
+  deleteTask(taskId: number): Observable<any> {
+    this.tasks = this.tasks.filter(task => task.id !== taskId);
+    this.tasksSubject.next(this.tasks);
+    return of({ id: taskId });
+  }
+
+  assignTask(taskId: number, assignee: string): Observable<any> {
+    const taskIndex = this.tasks.findIndex(task => task.id === taskId);
+    if (taskIndex > -1) {
+      this.tasks[taskIndex].assignee = assignee;
+      this.tasksSubject.next(this.tasks);
+    }
+    return of(this.tasks[taskIndex]);
+  }
+
+  createTask(newTask: any): Observable<any> {
+    newTask.id = this.tasks.length + 1;
+    this.tasks.push(newTask);
+    this.tasksSubject.next(this.tasks);
+    return of(newTask);
   }
 }

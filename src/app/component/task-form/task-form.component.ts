@@ -46,28 +46,5 @@ export class TaskFormComponent implements OnInit {
   //   });
   // }
 
-  onSubmit(): void {
-    if (this.taskForm.valid) {
-      console.log("submitting")
-      this.loading = true;
-      const task = this.taskForm.value;
-      const taskObservable = this.taskId
-        ? this.taskService.updateTask({ id: this.taskId, ...task })
-        : this.taskService.createTask(task);
 
-      taskObservable.subscribe({
-        next: () => {
-          this.loading = false;
-          this.router.navigate(['/dashboard']);
-        },
-        error: () => {
-          this.loading = false;
-          alert('Something went wrong while submitting the task.');
-        }
-      });
-    }
-    else{
-      console.log(this.taskForm.value);
-    }
-  }
 }
